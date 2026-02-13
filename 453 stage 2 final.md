@@ -1,4 +1,4 @@
-# IY453 Milestone 1
+# IY453 Stage 2
 
 | Assessment Details | Please Complete All Details |
 | ------------------ | --------------------------- |
@@ -8,7 +8,7 @@
 | Module Tutor Name  | Jonathan shore              |
 | Student ID Number  | P500331                     |
 | Date of Submission | 30-1-2026                   |
-| Word Count         | 882                         |
+| Word Count         | 998                         |
 
 - [x] *I confirm that this assignment is my own work. Where I have referred to academic sources, I have provided in-text citations and included the sources in
   the final reference list.*
@@ -81,22 +81,98 @@ The "Lost Forest" program creates an interactive text-based adventure game which
 | **Error Messages**     | Invalid input triggers error messages and prompts for retries.              | Meaningful error messages to guide the player.                            |
 | **Endgame Messages**   | Game calculates final score and displays win/lose summary.                  | Conclusive message with final score and ending narrative.                 |
 
-------------------------------------------------------------------------------------------------------------------------------
+### 
 
-### Gantt Chart
+---
 
-![](C:\Users\Prithvi\AppData\Roaming\marktext\images\2026-02-04-17-46-16-image.png)
+Program Code:
 
-------------------------------------------------------------------------------------------------------------------------------
+#include <iostream>  
+using namespace std;  
 
-### Diary Entries:
+int main() {  
 
-### 30/01/2026
+    // START  
+    cout << "Welcome to \"The Lost Forest\"" << endl;  
+    
+    // Enter player name  
+    string playerName;  
+    cout << "Enter player name: ";  
+    cin >> playerName;  
+    
+    // Initialize stats  
+    int health = 100;  
+    int lives = 3;  
+    int score = 0;  
+    
+    cout << "\nWelcome to The Lost Forest, " << playerName << "!\n";  
+    
+    // Main game loop  
+    bool reachedEnding = false;  
+    
+    while (!reachedEnding) {  
+    
+        // Enter choice  
+        int choice;  
+        cout << "\nEnter your choice (1 or 2): ";  
+        cin >> choice;  
+    
+        // Validate input  
+        if (choice != 1 && choice != 2) {  
+            cout << "Invalid input. Please enter 1 or 2.\n";  
+            continue;  
+        }  
+    
+        // Apply choice outcome  
+        if (choice == 1) {  
+            cout << "You move forward carefully.\n";  
+            score += 10;  
+        } else {  
+            cout << "You take a dangerous path.\n";  
+            health -= 30;  
+        }  
+    
+        // Check if player is dead  
+        if (health <= 0) {  
+            lives--;  
+            cout << "You lost a life!\n";  
+    
+            if (lives <= 0) {  
+                cout << "\nGame Over\n";  
+                cout << "Final Score: " << score << endl;  
+                return 0;  
+            }  
+    
+            health = 100; // reset health  
+        }  
+    
+    
+        if (score >= 20) {  
+            reachedEnding = true;  
+        }  
+    
+        cout << "Health: " << health << " | Lives: " << lives  
+             << " | Score: " << score << endl;  
+    }  
+    
+    // Final choice  
+    cout << "\nFinal Choice!\n";  
+    cout << "1) Save the forest\n";  
+    cout << "2) Walk away\n";  
+    
+    int finalChoice;  
+    cin >> finalChoice;  
+    
+    // Win or lose  
+    if (finalChoice == 1) {  
+        cout << "\nVictory! The forest is saved.\n";  
+    } else {  
+        cout << "\nYour strength fades. Game Over.\n";  
+    }  
+    
+    cout << "Final Score: " << score << endl;  
+    cout << "End\n";  
+    
+    return 0;  
 
-Today, I officially started working on the *IY453 Milestone 1* project. My focus was on completing the **functional requirements** and the **input/output process**. I carefully outlined the key features the game must have, such as user interaction, binary choices, inventory management, combat, puzzles, scoring, and save/load functionality. I also created a detailed input/output table to show how the game processes player inputs and provides outputs like narrative text, feedback, and error messages.
-
-### 04/02/2026
-
-I continued working on the project today and made significant progress. I completed the **non-functional requirements**, which focus on the performance, usability, reliability, scalability, and maintainability of the game. These requirements ensure the game is efficient, user-friendly, and easy to expand or debug in the future.I also worked on the **table of contents** and wrote the **purpose of the program**, which explains the goal of the game and how it demonstrates object-oriented programming principles. Additionally, I revisited and **edited the input/output table** to make it more concise and easier to understand.
-
-------------------------------------------------------------------------------------------------------------------------------
+}
