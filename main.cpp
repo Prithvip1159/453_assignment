@@ -48,7 +48,8 @@ void DisplayStats(int health, int lives, int score, int attack, int defense)
 
 // displays simple inventory
 void DisplayInventory(bool has_hunters_dagger, bool has_healing_berries,
-                      bool has_cloak_of_thorns, bool has_ancient_amulet)
+                      bool has_cloak_of_thorns, bool has_ancient_amulet,
+                      bool has_fire_torch)
 {
     cout << "\n---------- INVENTORY ----------\n";
 
@@ -75,6 +76,12 @@ void DisplayInventory(bool has_hunters_dagger, bool has_healing_berries,
     if (has_ancient_amulet)
     {
         cout << "- Ancient Amulet\n";
+        has_items = true;
+    }
+
+    if (has_fire_torch)
+    {
+        cout << "- Fire Torch\n";
         has_items = true;
     }
 
@@ -478,7 +485,7 @@ void Scene9(int& score, int& attack, int& defense, int& health, int lives, bool&
 
 // scene 10 - combat with the forest serpent
 void Scene10(int& health, int& lives, int& score, int attack, int defense,
-             bool has_hunters_dagger, bool has_cloak_of_thorns, bool has_ancient_amulet)
+             bool has_hunters_dagger, bool has_cloak_of_thorns, bool has_ancient_amulet, bool& has_healing_berries)
 {
     cout << "===Scene 10- The Forest Serpent===\n";
 
@@ -503,6 +510,28 @@ void Scene10(int& health, int& lives, int& score, int attack, int defense,
         if (has_ancient_amulet)
         {
             cout << "The Ancient Amulet  pulses with energy.\n";
+        }
+        if (has_healing_berries)
+        {
+            cout<< "\nYou Have Healing Berries.\n";
+            cout<< "Do you want to eat them before the fight?\n";
+            cout<< "1) Yes\n";
+            cout<< "2) No\n";
+            cout<< "Enter your choice (1 or 2): ";
+
+            int berryChoice = ReadChoice12();
+
+            if (berryChoice == 1 )
+            {
+                health += 10;
+
+                if (health>100)
+                    health = 100;
+                cout << "\nYou eat the Healing berries.\n";
+                cout << "Health restored.\n";
+
+                has_healing_berries = false; // consume item
+            }
         }
 
         // random combat values
@@ -541,6 +570,192 @@ void Scene10(int& health, int& lives, int& score, int attack, int defense,
 
     DisplayStats(health, lives, score, attack, defense);
 }
+// scene 11 - item collection at the herbalists hut
+void Scene11(int& score, int& health, int lives, int attack, int defense, bool& has_fire_torch)
+{
+    cout << "===Scene 11- The Herbalist's Hut===\n";
+
+    cout << "You find a  small wooden hut  overgrown with moss.\n";
+    cout << "The door hangs  open and smoke  rises from inside.\n";
+    cout << "1) Enter the  hut\n";
+    cout << "2) Walk past  the hut\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nYou step inside  the hut and find  shelves of strange potions.\n";
+        cout << "On the table  you spot a  burning torch that  never seems to fade.\n";
+
+        if (!has_fire_torch)
+        {
+            has_fire_torch = true;
+            DisplayItemObtained("Fire Torch");
+            cout << "This will help  you see in  dark places.\n";
+        }
+        else
+        {
+            cout << "You already have the Fire Torch.\n";
+        }
+
+        health += 10; // resting in the hut restores some health
+        if (health > 100)
+        {
+            health = 100;
+        }
+
+        cout << " You gained 10 health.\n";
+        score += 10;
+    }
+    else
+    {
+        cout << "\nYou walk past  the hut and  continue on your journey.\n";
+        score += 5;
+    }
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+// scene 12 - the dark tunnel requires fire torch for advantage
+void Scene12(int& health, int& lives, int& score, int attack, int defense, bool has_fire_torch)
+{
+    cout << "===Scene 12- The Dark Tunnel===\n";
+
+    cout << "A dark tunnel  stretches before you.\n";
+    cout << "You can hear  water dripping  from somewhere deep inside.\n";
+    cout << "1) Enter the  tunnel\n";
+    cout << "2) Go around  the hill instead\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        if (has_fire_torch)
+        {
+            cout << "\nYou light the  Fire Torch and  step into the tunnel.\n";
+            cout << "The torch reveals  the path clearly  and you pass through safely.\n";
+            score += 15;
+        }
+        else
+        {
+            cout << "\nYou stumble through  the darkness blindly.\n";
+            cout << "You trip over  a rock and  cut your leg  on a sharp stone.\n";
+            health -= 15; // no torch means damage in the dark
+            cout << " You lost 15 health.\n";
+            score += 5;
+        }
+    }
+    else
+    {
+        cout << "\nYou take the  long way around  the hill.\n";
+        cout << "The path is  tiring but safe.\n";
+        health -= 5; // tiredness from the long path
+        cout << " You lost 5 health from exhaustion.\n";
+        score += 5;
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+// scene 13 - puzzle scene with a word completion challenge
+void Scene13(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 13- The Vine Puzzle===\n";
+
+    cout << "Thick magical vines  block your path.\n";
+    cout << "Letters glow on  each vine forming  an incomplete word:\n";
+    cout << "\"F _ R E S T\"\n";
+    cout << "What is the  missing letter?\n";
+    cout << "Enter your answer: ";
+
+    string answer;
+    getline(cin, answer);
+
+    if (answer == "O" || answer == "o")
+    {
+        cout << "\nCorrect! The vines  part and reveal  the way forward.\n";
+        score += 15;
+    }
+    else
+    {
+        cout << "\nWrong! The vines  lash out and  cut your arms.\n";
+        health -= 10; // wrong answer damages the player
+        cout << " You lost 10 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+// scene 14 - combat with the corrupted bear
+void Scene14(int& health, int& lives, int& score, int attack, int defense,
+             bool has_hunters_dagger, bool has_ancient_amulet)
+{
+    cout << "===Scene 14- The Corrupted Bear===\n";
+
+    cout << "A massive corrupted  bear crashes through  the trees!\n";
+    cout << "Dark veins pulse  across its body  and its roar  shakes the ground.\n";
+    cout << "1) Fight the  bear head on\n";
+    cout << "2) Try to  climb a tree  and escape\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        if (has_hunters_dagger)
+        {
+            cout << "\nYou ready the  Hunter's Dagger.\n";
+        }
+        if (has_ancient_amulet)
+        {
+            cout << "The Ancient Amulet  glows with power.\n";
+        }
+
+        // random combat values
+        int player_roll = rand() % 6 + 1;
+        int bear_roll = rand() % 6 + 1;
+
+        int player_power = attack + defense + player_roll;
+        int bear_power = 20 + bear_roll; // bear is stronger than the serpent
+
+        cout << "\nYour combat power : " << player_power << endl;
+        cout << "Bear combat power : " << bear_power << endl;
+
+        if (player_power >= bear_power)
+        {
+            cout << "\nYou strike the  bear down with  a powerful blow!\n";
+            cout << "The corruption fades  from its body  as it collapses.\n";
+            score += 30;
+        }
+        else
+        {
+            cout << "\nThe bear swipes  you with its  massive claws!\n";
+            health -= 35; // bear deals very heavy damage
+            cout << " You lost 35 health.\n";
+        }
+    }
+    else
+    {
+        cout << "\nYou scramble up  the nearest tree!\n";
+        cout << "The bear claws  at the trunk  but cannot reach you.\n";
+        cout << "However a branch  snaps and you  fall hitting the ground.\n";
+        health -= 15; // falling from the tree costs health
+        cout << " You lost 15 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
 
 int main()
 {
@@ -565,6 +780,7 @@ int main()
     bool has_healing_berries = false;
     bool has_cloak_of_thorns = false;
     bool has_ancient_amulet = false;
+    bool has_fire_torch = false;
 
     cout << "\nWelcome to The Lost Forest, " << player_name << "!\n";
 
@@ -573,41 +789,70 @@ int main()
 
     Scene3(score, attack, health, lives, defense, has_hunters_dagger);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene4(health, lives, score, attack, defense, has_hunters_dagger);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene5(health, lives, score, attack, defense, has_healing_berries);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene6(score, defense, health, lives, attack, has_cloak_of_thorns);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene7(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene8(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene9(score, attack, defense, health, lives, has_ancient_amulet);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
 
     Scene10(health, lives, score, attack, defense,
-            has_hunters_dagger, has_cloak_of_thorns, has_ancient_amulet);
+            has_hunters_dagger, has_cloak_of_thorns, has_ancient_amulet,has_healing_berries);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
-                     has_cloak_of_thorns, has_ancient_amulet);
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
+    Scene11(score, health, lives, attack, defense, has_fire_torch);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
+    Scene12(health, lives, score, attack, defense, has_fire_torch);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
+    Scene13(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
+    Scene14(health, lives, score, attack, defense,
+            has_hunters_dagger, has_ancient_amulet);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
 
     cout << "=======END OF CURRENT GAME BUILD=======\n";
-    cout << "You have reached the path toward the Verdant Core.\n";
+    cout << "You have survived the forest and reached the path toward the Verdant Core.\n";
     cout << "Final Score so far: " << score << endl;
 
     return 0;
 }
-
