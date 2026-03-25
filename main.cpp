@@ -757,6 +757,93 @@ void Scene14(int& health, int& lives, int& score, int attack, int defense,
     DisplayStats(health, lives, score, attack, defense);
 }
 
+// scene 15 - math puzzle at the ancient door
+void Scene15(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 15- The Ancient Door===\n";
+
+    cout << "A stone door  blocks the path.\n";
+    cout << "Numbers are carved  into the surface.\n";
+    cout << "\"I am a number.  If you multiply  me by 6 and  add 4 you get 40.\"\n";
+    cout << "\"What number am I?\"\n";
+    cout << "Enter your answer: ";
+
+    string input;
+    getline(cin, input);
+
+    if (input == "6")
+    {
+        cout << "\nCorrect! The ancient  door slowly opens.\n";
+        score += 15;
+    }
+    else
+    {
+        cout << "\nWrong! A burst  of energy knocks  you backwards.\n";
+        health -= 10; // wrong answer damages the player
+        cout << "[-10] You lost 10 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+// scene 16 - the cursed clearing with a risk reward choice
+void Scene16(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 16- The Cursed Clearing===\n";
+
+    cout << "You enter a  clearing where the  air feels heavy.\n";
+    cout << "A glowing pool  of liquid sits  in the centre.\n";
+    cout << "1) Drink from  the glowing pool\n";
+    cout << "2) Avoid the  pool and cross  the clearing quickly\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        // random outcome for drinking from the pool
+        int outcome = rand() % 3;
+
+        if (outcome == 0)
+        {
+            cout << "\nThe liquid is  a powerful healing  elixir!\n";
+            health += 30; // powerful heal
+            if (health > 100)
+            {
+                health = 100;
+            }
+            cout << "[+30] You gained 30 health.\n";
+            score += 10;
+        }
+        else if (outcome == 1)
+        {
+            cout << "\nThe liquid burns  your throat with  cursed energy!\n";
+            health -= 25; // cursed liquid damages the player
+            cout << "[-25] You lost 25 health.\n";
+        }
+        else
+        {
+            cout << "\nThe liquid tastes  like nothing and  has no effect.\n";
+        }
+    }
+    else
+    {
+        cout << "\nYou hurry across  the clearing.\n";
+        cout << "Dark tendrils rise  from the ground  and scratch your legs.\n";
+        health -= 5; // minor damage from the clearing
+        cout << "[-5] You lost 5 health.\n";
+        score += 5;
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
 int main()
 {
     srand(time(0));
@@ -845,6 +932,16 @@ int main()
 
     Scene14(health, lives, score, attack, defense,
             has_hunters_dagger, has_ancient_amulet);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
+    Scene15(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch);
+
+    Scene16(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
                      has_fire_torch);
