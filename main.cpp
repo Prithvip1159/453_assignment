@@ -49,7 +49,7 @@ void DisplayStats(int health, int lives, int score, int attack, int defense)
 // displays simple inventory
 void DisplayInventory(bool has_hunters_dagger, bool has_healing_berries,
                       bool has_cloak_of_thorns, bool has_ancient_amulet,
-                      bool has_fire_torch)
+                      bool has_fire_torch,bool has_enchanted_shield)
 {
     cout << "\n---------- INVENTORY ----------\n";
 
@@ -82,6 +82,11 @@ void DisplayInventory(bool has_hunters_dagger, bool has_healing_berries,
     if (has_fire_torch)
     {
         cout << "- Fire Torch\n";
+        has_items = true;
+    }
+    if (has_enchanted_shield)
+    {
+        cout << "- Enchanted Shield\n";
         has_items = true;
     }
 
@@ -843,6 +848,121 @@ void Scene16(int& health, int& lives, int& score, int attack, int defense)
 
     DisplayStats(health, lives, score, attack, defense);
 }
+// scene 17 - item collection at the ancient armoury
+void Scene17(int& score, int& defense, int& health, int lives, int attack, bool& has_enchanted_shield)
+{
+    cout << "\n===Scene 17- The Ancient Armoury===\n";
+
+    cout << "Hidden behind a  waterfall you discover  an ancient armoury.\n";
+    cout << "Rusted weapons line  the walls but  one item still glows.\n";
+    cout << "1) Take the  glowing shield\n";
+    cout << "2) Leave the  armoury undisturbed\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nYou lift the  shield from the  wall.\n";
+        cout << "It hums with  ancient protective magic.\n";
+
+        if (!has_enchanted_shield)
+        {
+            has_enchanted_shield = true;
+            defense += 7; // enchanted shield gives a strong defense boost
+            DisplayItemObtained("Enchanted Shield");
+            cout << "Your defense increases by 7.\n";
+        }
+        else
+        {
+            cout << "You already have the Enchanted Shield.\n";
+        }
+
+        score += 15;
+    }
+    else
+    {
+        cout << "\nYou leave the  armoury and continue  your journey.\n";
+        score += 5;
+    }
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+// scene 18 - combat with the shadow wolves
+void Scene18(int& health, int& lives, int& score, int attack, int defense,
+             bool has_hunters_dagger, bool has_enchanted_shield)
+{
+    cout << "===Scene 18- The Shadow Wolves===\n";
+
+    cout << "A pack of  shadow wolves surround  you!\n";
+    cout << "Their dark forms  flicker like smoke  and their eyes  burn with hatred.\n";
+    cout << "1) Stand and  fight the pack\n";
+    cout << "2) Use fire  to scare them  away\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        if (has_hunters_dagger)
+        {
+            cout << "\nYou slash at  the wolves with  the Hunter's Dagger.\n";
+        }
+        if (has_enchanted_shield)
+        {
+            cout << "The Enchanted Shield  blocks their attacks.\n";
+        }
+
+        // random combat values
+        int player_roll = rand() % 6 + 1;
+        int wolves_roll = rand() % 6 + 1;
+
+        int player_power = attack + defense + player_roll;
+        int wolves_power = 22 + wolves_roll; // wolf pack is very strong
+
+        cout << "\nYour combat power  : " << player_power << endl;
+        cout << "Wolves combat power: " << wolves_power << endl;
+
+        if (player_power >= wolves_power)
+        {
+            cout << "\nYou fight off  the shadow wolves!\n";
+            cout << "They dissolve into  black mist.\n";
+            score += 30;
+        }
+        else
+        {
+            cout << "\nThe wolves overwhelm  you with their  numbers!\n";
+            health -= 35; // wolf pack deals heavy damage
+            cout << "[-35] You lost 35 health.\n";
+        }
+    }
+    else
+    {
+        // using fire has a random chance of working
+        int outcome = rand() % 2;
+
+        if (outcome == 0)
+        {
+            cout << "\nYou grab a  branch and wave  fire at the wolves!\n";
+            cout << "They scatter into  the darkness.\n";
+            score += 15;
+        }
+        else
+        {
+            cout << "\nThe fire does  not scare them!\n";
+            cout << "One wolf bites  your arm before  you can escape.\n";
+            health -= 20; // failed scare attempt costs health
+            cout << "[-20] You lost 20 health.\n";
+        }
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
 
 int main()
 {
@@ -868,6 +988,7 @@ int main()
     bool has_cloak_of_thorns = false;
     bool has_ancient_amulet = false;
     bool has_fire_torch = false;
+    bool has_enchanted_shield = false;
 
     cout << "\nWelcome to The Lost Forest, " << player_name << "!\n";
 
@@ -877,74 +998,85 @@ int main()
     Scene3(score, attack, health, lives, defense, has_hunters_dagger);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield    );
 
     Scene4(health, lives, score, attack, defense, has_hunters_dagger);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene5(health, lives, score, attack, defense, has_healing_berries);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene6(score, defense, health, lives, attack, has_cloak_of_thorns);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene7(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene8(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene9(score, attack, defense, health, lives, has_ancient_amulet);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene10(health, lives, score, attack, defense,
             has_hunters_dagger, has_cloak_of_thorns, has_ancient_amulet,has_healing_berries);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene11(score, health, lives, attack, defense, has_fire_torch);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene12(health, lives, score, attack, defense, has_fire_torch);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene13(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene14(health, lives, score, attack, defense,
             has_hunters_dagger, has_ancient_amulet);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene15(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
 
     Scene16(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch);
+                     has_fire_torch,has_enchanted_shield);
+
+    Scene17(score, defense, health, lives, attack, has_enchanted_shield);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene18(health, lives, score, attack, defense,
+            has_hunters_dagger, has_enchanted_shield);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
 
 
     cout << "=======END OF CURRENT GAME BUILD=======\n";
