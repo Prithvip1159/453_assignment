@@ -49,7 +49,7 @@ void DisplayStats(int health, int lives, int score, int attack, int defense)
 // displays simple inventory
 void DisplayInventory(bool has_hunters_dagger, bool has_healing_berries,
                       bool has_cloak_of_thorns, bool has_ancient_amulet,
-                      bool has_fire_torch,bool has_enchanted_shield)
+                      bool has_fire_torch, bool has_enchanted_shield)
 {
     cout << "\n---------- INVENTORY ----------\n";
 
@@ -84,6 +84,7 @@ void DisplayInventory(bool has_hunters_dagger, bool has_healing_berries,
         cout << "- Fire Torch\n";
         has_items = true;
     }
+
     if (has_enchanted_shield)
     {
         cout << "- Enchanted Shield\n";
@@ -962,7 +963,111 @@ void Scene18(int& health, int& lives, int& score, int attack, int defense,
 
     DisplayStats(health, lives, score, attack, defense);
 }
+// scene 19 - riddle puzzle from the elder tree
+void Scene19(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 19- The Elder Tree Riddle===\n";
 
+    cout << "An enormous ancient  tree speaks to you  with a deep voice.\n";
+    cout << "\"Answer my riddle  and I shall  let you pass.\"\n";
+    cout << "\"I have cities  but no houses.  I have mountains  but no trees.\"\n";
+    cout << "\"I have water  but no fish.  What am I?\"\n";
+    cout << "Enter your answer: ";
+
+    string answer;
+    getline(cin, answer);
+
+    if (answer == "map" || answer == "Map" || answer == "MAP"
+        || answer == "a map" || answer == "A map" || answer == "A Map")
+    {
+        cout << "\nCorrect! The Elder  Tree bows its  branches and clears  the way.\n";
+        score += 20;
+    }
+    else
+    {
+        cout << "\nWrong! The Elder  Tree slams a  branch down on you.\n";
+        health -= 20; // wrong answer deals heavy damage
+        cout << "[-20] You lost 20 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+// scene 20 - combat with the forest wraith
+void Scene20(int& health, int& lives, int& score, int attack, int defense,
+             bool has_hunters_dagger, bool has_cloak_of_thorns,
+             bool has_ancient_amulet, bool has_enchanted_shield)
+{
+    cout << "===Scene 20- The Forest Wraith===\n";
+
+    cout << "A terrifying wraith  rises from the  ground before you!\n";
+    cout << "Its hollow eyes  burn with green  fire and its  claws drip with poison.\n";
+    cout << "This is the  guardian of the  inner forest.\n";
+    cout << "1) Fight the  wraith with everything  you have\n";
+    cout << "2) Try to  run past the  wraith\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        if (has_hunters_dagger)
+        {
+            cout << "\nYou raise the  Hunter's Dagger.\n";
+        }
+        if (has_cloak_of_thorns)
+        {
+            cout << "The Cloak of Thorns  wraps around you  protectively.\n";
+        }
+        if (has_ancient_amulet)
+        {
+            cout << "The Ancient Amulet  blazes with light.\n";
+        }
+        if (has_enchanted_shield)
+        {
+            cout << "The Enchanted Shield  forms a barrier  of light.\n";
+        }
+
+        // random combat values
+        int player_roll = rand() % 6 + 1;
+        int wraith_roll = rand() % 6 + 1;
+
+        int player_power = attack + defense + player_roll;
+        int wraith_power = 25 + wraith_roll; // wraith is the strongest enemy so far
+
+        cout << "\nYour combat power  : " << player_power << endl;
+        cout << "Wraith combat power: " << wraith_power << endl;
+
+        if (player_power >= wraith_power)
+        {
+            cout << "\nYou vanquish the  forest wraith!\n";
+            cout << "It screams and  dissolves into green  sparks of light.\n";
+            cout << "The path to  the Verdant Core  is now open.\n";
+            score += 40;
+        }
+        else
+        {
+            cout << "\nThe wraith strikes  you with its  poisonous claws!\n";
+            health -= 40; // wraith deals massive damage
+            cout << "[-40] You lost 40 health.\n";
+        }
+    }
+    else
+    {
+        cout << "\nYou sprint past  the wraith!\n";
+        cout << "Its claws rake  across your back  as you escape.\n";
+        health -= 20; // escaping the wraith costs significant health
+        cout << "[-20] You lost 20 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
 
 int main()
 {
@@ -998,74 +1103,74 @@ int main()
     Scene3(score, attack, health, lives, defense, has_hunters_dagger);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield    );
+                     has_fire_torch, has_enchanted_shield);
 
     Scene4(health, lives, score, attack, defense, has_hunters_dagger);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene5(health, lives, score, attack, defense, has_healing_berries);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene6(score, defense, health, lives, attack, has_cloak_of_thorns);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene7(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene8(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene9(score, attack, defense, health, lives, has_ancient_amulet);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
-    Scene10(health, lives, score, attack, defense,
-            has_hunters_dagger, has_cloak_of_thorns, has_ancient_amulet,has_healing_berries);
+    Scene10(score,health, lives, score, attack, defense,
+            has_hunters_dagger, has_cloak_of_thorns, has_ancient_amulet);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene11(score, health, lives, attack, defense, has_fire_torch);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene12(health, lives, score, attack, defense, has_fire_torch);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene13(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene14(health, lives, score, attack, defense,
             has_hunters_dagger, has_ancient_amulet);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene15(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene16(health, lives, score, attack, defense);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
-                     has_fire_torch,has_enchanted_shield);
+                     has_fire_torch, has_enchanted_shield);
 
     Scene17(score, defense, health, lives, attack, has_enchanted_shield);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
@@ -1078,9 +1183,20 @@ int main()
                      has_cloak_of_thorns, has_ancient_amulet,
                      has_fire_torch, has_enchanted_shield);
 
+    Scene19(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene20(health, lives, score, attack, defense,
+            has_hunters_dagger, has_cloak_of_thorns,
+            has_ancient_amulet, has_enchanted_shield);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
 
     cout << "=======END OF CURRENT GAME BUILD=======\n";
-    cout << "You have survived the forest and reached the path toward the Verdant Core.\n";
+    cout << "You have reached the path toward the Verdant Core.\n";
     cout << "Final Score so far: " << score << endl;
 
     return 0;
