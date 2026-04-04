@@ -525,14 +525,16 @@ void Scene10(int& health, int& lives, int& score, int attack, int defense,
             cout<< "2) No\n";
             cout<< "Enter your choice (1 or 2): ";
 
-            int berryChoice = ReadChoice12();
+            int berry_choice = ReadChoice12();
 
-            if (berryChoice == 1 )
+            if (berry_choice == 1 )
             {
                 health += 10;
 
-                if (health>100)
+                if (health > 100)
+                {
                     health = 100;
+                }
                 cout << "\nYou eat the Healing berries.\n";
                 cout << "Health restored.\n";
 
@@ -786,7 +788,7 @@ void Scene15(int& health, int& lives, int& score, int attack, int defense)
     {
         cout << "\nWrong! A burst  of energy knocks  you backwards.\n";
         health -= 10; // wrong answer damages the player
-        cout << "[-10] You lost 10 health.\n";
+        cout << " You lost 10 health.\n";
     }
 
     if (!CheckPlayerLife(health, lives))
@@ -821,14 +823,14 @@ void Scene16(int& health, int& lives, int& score, int attack, int defense)
             {
                 health = 100;
             }
-            cout << "[+30] You gained 30 health.\n";
+            cout << " You gained 30 health.\n";
             score += 10;
         }
         else if (outcome == 1)
         {
             cout << "\nThe liquid burns  your throat with  cursed energy!\n";
             health -= 25; // cursed liquid damages the player
-            cout << "[-25] You lost 25 health.\n";
+            cout << " You lost 25 health.\n";
         }
         else
         {
@@ -840,7 +842,7 @@ void Scene16(int& health, int& lives, int& score, int attack, int defense)
         cout << "\nYou hurry across  the clearing.\n";
         cout << "Dark tendrils rise  from the ground  and scratch your legs.\n";
         health -= 5; // minor damage from the clearing
-        cout << "[-5] You lost 5 health.\n";
+        cout << " You lost 5 health.\n";
         score += 5;
     }
 
@@ -935,7 +937,7 @@ void Scene18(int& health, int& lives, int& score, int attack, int defense,
         {
             cout << "\nThe wolves overwhelm  you with their  numbers!\n";
             health -= 35; // wolf pack deals heavy damage
-            cout << "[-35] You lost 35 health.\n";
+            cout << " You lost 35 health.\n";
         }
     }
     else
@@ -954,7 +956,7 @@ void Scene18(int& health, int& lives, int& score, int attack, int defense,
             cout << "\nThe fire does  not scare them!\n";
             cout << "One wolf bites  your arm before  you can escape.\n";
             health -= 20; // failed scare attempt costs health
-            cout << "[-20] You lost 20 health.\n";
+            cout << " You lost 20 health.\n";
         }
     }
 
@@ -987,7 +989,7 @@ void Scene19(int& health, int& lives, int& score, int attack, int defense)
     {
         cout << "\nWrong! The Elder  Tree slams a  branch down on you.\n";
         health -= 20; // wrong answer deals heavy damage
-        cout << "[-20] You lost 20 health.\n";
+        cout << " You lost 20 health.\n";
     }
 
     if (!CheckPlayerLife(health, lives))
@@ -1052,7 +1054,7 @@ void Scene20(int& health, int& lives, int& score, int attack, int defense,
         {
             cout << "\nThe wraith strikes  you with its  poisonous claws!\n";
             health -= 40; // wraith deals massive damage
-            cout << "[-40] You lost 40 health.\n";
+            cout << " You lost 40 health.\n";
         }
     }
     else
@@ -1060,7 +1062,34 @@ void Scene20(int& health, int& lives, int& score, int attack, int defense,
         cout << "\nYou sprint past  the wraith!\n";
         cout << "Its claws rake  across your back  as you escape.\n";
         health -= 20; // escaping the wraith costs significant health
-        cout << "[-20] You lost 20 health.\n";
+        cout << " You lost 20 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+void Scene21(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 21- The Rune Door===\n";
+    cout << "A giant stone door covered in glowing runes blocks your path.\n";
+    cout << "1) Touch the glowing runes\n";
+    cout << "2) Force the door open\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nThe runes glow brightly and the door opens slowly.\n";
+        score += 15;
+    }
+    else
+    {
+        cout << "\nYou slam against the heavy door and dark magic shocks you.\n";
+        health -= 10;
+        cout << " You lost 10 health.\n";
     }
 
     if (!CheckPlayerLife(health, lives))
@@ -1069,6 +1098,353 @@ void Scene20(int& health, int& lives, int& score, int attack, int defense,
     DisplayStats(health, lives, score, attack, defense);
 }
 
+void Scene22(int& health, int& lives, int& score, int attack, int defense, bool has_hunters_dagger)
+{
+    cout << "===Scene 22- The Wolf Pack===\n";
+    cout << "A pack of wolves steps out from the shadows.\n";
+    cout << "1) Fight the wolves\n";
+    cout << "2) Use the Hunter's Dagger to scare them\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        int player_roll = rand() % 6 + 1;
+        int wolves_roll = rand() % 6 + 1;
+
+        int player_power = attack + defense + player_roll;
+        int wolves_power = 22 + wolves_roll;
+
+        cout << "\nYour combat power  : " << player_power << endl;
+        cout << "Wolves combat power: " << wolves_power << endl;
+
+        if (player_power >= wolves_power)
+        {
+            cout << "\nYou defeat the wolf pack.\n";
+            score += 20;
+        }
+        else
+        {
+            cout << "\nThe wolves bite and scratch you badly.\n";
+            health -= 20;
+            cout << " You lost 20 health.\n";
+        }
+    }
+    else
+    {
+        if (has_hunters_dagger)
+        {
+            cout << "\nYou raise the Hunter's Dagger and the wolves back away.\n";
+            score += 10;
+        }
+        else
+        {
+            cout << "\nYou try to scare them, but you have no weapon.\n";
+            health -= 10;
+            cout << " You lost 10 health.\n";
+        }
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+void Scene23(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 23- The Sudden Storm===\n";
+    cout << "A violent magical storm crashes through the trees.\n";
+    cout << "1) Hide beneath a rock shelter\n";
+    cout << "2) Run through the storm\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nYou wait safely until the storm passes.\n";
+        score += 5;
+    }
+    else
+    {
+        cout << "\nWind and branches strike your body as you run.\n";
+        health -= 15;
+        cout << " You lost 15 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+
+}
+void Scene24(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 24- The Lost Traveller===\n";
+
+    cout << "You find an injured traveller resting against a broken tree.\n";
+    cout << "Their clothes are torn and they look weak.\n";
+    cout << "1) Help the traveller\n";
+    cout << "2) Ignore them and continue\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nYou help the traveller and give them support.\n";
+        cout << "They thank you and point you toward a safer path.\n";
+        score += 15;
+        health += 5;
+
+        if (health > 100)
+        {
+            health = 100;
+        }
+
+        cout << " You gained 5 health.\n";
+    }
+    else
+    {
+        cout << "\nYou leave the traveller behind and continue deeper into the forest.\n";
+        cout << "The path ahead feels colder and more silent.\n";
+        score += 5;
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+void Scene25(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 25- The Hidden Pit===\n";
+
+    cout << "The ground ahead looks cracked and unstable.\n";
+    cout << "You notice a deep pit partly hidden by leaves.\n";
+    cout << "1) Jump across the pit\n";
+    cout << "2) Walk slowly around it\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        int outcome = rand() % 2;
+
+        if (outcome == 0)
+        {
+            cout << "\nYou leap across the pit and land safely.\n";
+            score += 15;
+        }
+        else
+        {
+            cout << "\nYou misjudge the jump and slip into the edge of the pit.\n";
+            cout << "You climb out, but not without injury.\n";
+            health -= 15;
+            cout << " You lost 15 health.\n";
+        }
+    }
+    else
+    {
+        cout << "\nYou carefully move around the unstable ground.\n";
+        cout << "It is slow, but you stay safe.\n";
+        score += 5;
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+void Scene26(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 26- Mirror Lake===\n";
+
+    cout << "A silent lake reflects the strange glowing mark on your hand.\n";
+    cout << "The water shines like glass under the moonlight.\n";
+    cout << "1) Touch the water\n";
+    cout << "2) Step back and continue\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nThe lake glows and shows you a vision.\n";
+        cout << "You see yourself standing before the Verdant Core.\n";
+        cout << "A voice whispers that your fate is tied to the forest.\n";
+        score += 15;
+    }
+    else
+    {
+        cout << "\nYou step away from the lake and continue along the path.\n";
+        score += 5;
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+void Scene27(int& health, int& lives, int& score, int attack, int defense,
+             bool has_cloak_of_thorns)
+{
+    cout << "===Scene 27- The Shadow Creature===\n";
+
+    cout << "A shadow creature rises from the ground in front of you.\n";
+    cout << "Its body twists like smoke and its claws gleam in the dark.\n";
+    cout << "1) Fight the creature\n";
+    cout << "2) Use the Cloak of Thorns\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        int player_roll = rand() % 6 + 1;
+        int shadow_roll = rand() % 6 + 1;
+
+        int player_power = attack + defense + player_roll;
+        int shadow_power = 24 + shadow_roll;
+
+        cout << "\nYour combat power   : " << player_power << endl;
+        cout << "Shadow combat power : " << shadow_power << endl;
+
+        if (player_power >= shadow_power)
+        {
+            cout << "\nYou defeat the shadow creature.\n";
+            score += 25;
+        }
+        else
+        {
+            cout << "\nThe shadow creature tears across your chest.\n";
+            health -= 25;
+            cout << " You lost 25 health.\n";
+        }
+    }
+    else
+    {
+        if (has_cloak_of_thorns)
+        {
+            cout << "\nThe Cloak of Thorns glows and shields you from the attack.\n";
+            cout << "The creature recoils and melts back into darkness.\n";
+            score += 20;
+        }
+        else
+        {
+            cout << "\nYou reach for protection, but you have no cloak.\n";
+            health -= 15;
+            cout << " You lost 15 health.\n";
+        }
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+
+void Scene28(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 28- The Ancient Gate===\n";
+
+    cout << "A giant gate stands before the centre of the forest.\n";
+    cout << "Vines crawl across its surface and ancient symbols glow faintly.\n";
+    cout << "1) Push the gate open\n";
+    cout << "2) Climb over the gate\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nYou force the heavy gate open and squeeze through.\n";
+        cout << "The path to the inner forest is now clear.\n";
+        score += 15;
+    }
+    else
+    {
+        cout << "\nYou climb the gate, but the old metal tears your hands.\n";
+        health -= 15;
+        cout << " You lost 15 health.\n";
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+
+void Scene29(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 29- The Spirit Council===\n";
+
+    cout << "Ancient forest spirits circle around you in silence.\n";
+    cout << "They study the glowing mark on your hand.\n";
+    cout << "1) Promise to restore balance\n";
+    cout << "2) Claim the forest's power for yourself\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nThe spirits bow and allow you to pass.\n";
+        cout << "A calm energy fills your body.\n";
+        score += 20;
+    }
+    else
+    {
+        cout << "\nThe spirits shrink back in anger.\n";
+        cout << "A dark weight settles on the path ahead.\n";
+        score += 5;
+    }
+
+    if (!CheckPlayerLife(health, lives))
+        exit(0);
+
+    DisplayStats(health, lives, score, attack, defense);
+}
+
+void Scene30(int& health, int& lives, int& score, int attack, int defense)
+{
+    cout << "===Scene 30- The Verdant Core===\n";
+
+    cout << "At last, you stand before the Verdant Core.\n";
+    cout << "Its green light pulses through the ancient chamber.\n";
+    cout << "The forest seems to breathe around you.\n";
+    cout << "1) Restore the Core\n";
+    cout << "2) Destroy the Core\n";
+    cout << "Enter your choice (1 or 2): ";
+
+    int choice = ReadChoice12();
+
+    if (choice == 1)
+    {
+        cout << "\nYou place your hand upon the Verdant Core.\n";
+        cout << "The corruption fades and life returns to the forest.\n";
+        cout << "Eldoria is saved.\n";
+        score += 50;
+        cout << "\n=== TRUE ENDING ===\n";
+    }
+    else
+    {
+        cout << "\nYou strike the Verdant Core with all your strength.\n";
+        cout << "The chamber shakes as the forest begins to collapse.\n";
+        cout << "The corruption is gone, but so is the ancient magic.\n";
+        cout << "\n=== DARK ENDING ===\n";
+    }
+
+    DisplayStats(health, lives, score, attack, defense);
+}
 int main()
 {
     srand(time(0));
@@ -1135,8 +1511,9 @@ int main()
                      has_cloak_of_thorns, has_ancient_amulet,
                      has_fire_torch, has_enchanted_shield);
 
-    Scene10(score,health, lives, score, attack, defense,
-            has_hunters_dagger, has_cloak_of_thorns, has_ancient_amulet);
+    Scene10(health, lives, score, attack, defense,
+        has_hunters_dagger, has_cloak_of_thorns,
+        has_ancient_amulet, has_healing_berries);
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
                      has_fire_torch, has_enchanted_shield);
@@ -1194,10 +1571,54 @@ int main()
     DisplayInventory(has_hunters_dagger, has_healing_berries,
                      has_cloak_of_thorns, has_ancient_amulet,
                      has_fire_torch, has_enchanted_shield);
+    Scene21(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
 
-    cout << "=======END OF CURRENT GAME BUILD=======\n";
-    cout << "You have reached the path toward the Verdant Core.\n";
-    cout << "Final Score so far: " << score << endl;
+    Scene22(health, lives, score, attack, defense, has_hunters_dagger);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene23(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+    Scene24(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene25(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene26(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene27(health, lives, score, attack, defense, has_cloak_of_thorns);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene28(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene29(health, lives, score, attack, defense);
+    DisplayInventory(has_hunters_dagger, has_healing_berries,
+                     has_cloak_of_thorns, has_ancient_amulet,
+                     has_fire_torch, has_enchanted_shield);
+
+    Scene30(health, lives, score, attack, defense);
+
+    cout << "=======THE LOST FOREST COMPLETE=======\n";
+    cout << "Final Score: " << score << endl;
 
     return 0;
 }
